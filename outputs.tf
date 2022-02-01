@@ -1,5 +1,38 @@
 locals {
   layers = jsondecode(data.http.layers.body).Layers
+
+  //noinspection HILUnresolvedReference
+  versions_with_runtimes = transpose({
+    for layer in local.layers :
+      layer.LatestMatchingVersion.LayerVersionArn =>
+        [
+          for x in setproduct(layer.LatestMatchingVersion.CompatibleRuntimes, lookup(layer.LatestMatchingVersion, "CompatibleArchitectures", ["x86_64"])) :
+                "${x[0]}_${x[1]}"
+        ]
+  })
+
+  //noinspection HILUnresolvedReference
+  layers_with_runtimes = transpose({
+    for layer in local.layers :
+      layer.LayerArn =>
+        [
+          for x in setproduct(layer.LatestMatchingVersion.CompatibleRuntimes, lookup(layer.LatestMatchingVersion, "CompatibleArchitectures", ["x86_64"])) :
+                "${x[0]}_${x[1]}"
+        ]
+  })
+
+  # The next two sections make this backwards compatible, by adding a key without an architecture
+  layer_version_arns = merge({
+    for k, v in local.versions_with_runtimes : k => v[0]
+  }, {
+    for k, v in local.versions_with_runtimes : replace(k, "_x86_64", "") => v[0] if replace(k, "_x86_64", "") != k
+  })
+
+  layer_arns = merge({
+    for k, v in local.layers_with_runtimes : k => v[0]
+  }, {
+    for k, v in local.layers_with_runtimes : replace(k, "_x86_64", "") => v[0] if replace(k, "_x86_64", "") != k
+  })
 }
 
 output "environment_variables" {
@@ -18,11 +51,10 @@ output "policy_json" {
 }
 
 output "layer_version_arns" {
-  //noinspection HILUnresolvedReference
-  value = {for runtime, layer_name in local.runtime_map : runtime => local.layers[index(local.layers.*.LayerName, layer_name)].LatestMatchingVersion.LayerVersionArn}
+  value = local.layer_version_arns
 }
 
 output "layer_arns" {
-  //noinspection HILUnresolvedReference
-  value = {for runtime, layer_name in local.runtime_map : runtime => local.layers[index(local.layers.*.LayerName, layer_name)].LayerArn}
+  value = local.layer_arns
 }
+

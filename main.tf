@@ -1,33 +1,3 @@
-locals {
-  runtimes = [
-    "java11",
-    "java8",
-    "java8.al2",
-    "nodejs10.x",
-    "nodejs12.x",
-    "nodejs14.x",
-    "nodejs8.10",
-    "python2.7",
-    "python3.6",
-    "python3.7",
-    "python3.8",
-  ]
-  layers_names = [
-    "NewRelicJava11",
-    "NewRelicJava8",
-    "NewRelicJava8",
-    "NewRelicNodeJS10X",
-    "NewRelicNodeJS12X",
-    "NewRelicNodeJS14X",
-    "NewRelicNodeJS810",
-    "NewRelicPython27",
-    "NewRelicPython36",
-    "NewRelicPython37",
-    "NewRelicPython38",
-  ]
-  runtime_map = zipmap(local.runtimes, local.layers_names)
-}
-
 data "aws_region" "current" {
 }
 

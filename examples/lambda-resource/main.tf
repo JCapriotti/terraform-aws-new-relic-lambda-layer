@@ -1,5 +1,20 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 3.23.0"
+    }
+    http = {
+      source = "hashicorp/http"
+      version = ">= 2.0.0"
+    }
+  }
+
+  required_version = ">= 1.0.0"
+}
+
 provider "aws" {
-  region = "us-east-1"
+  region  = "us-east-1"
 }
 
 module "new_relic_layer" {
@@ -24,6 +39,23 @@ resource "aws_lambda_function" "my_lambda" {
   # --> Setup for handler, layer, and environment variables
   handler               = module.new_relic_layer.lambda_handler
   layers                = [module.new_relic_layer.layer_version_arns["python3.8"]]
+  environment {
+    variables = module.new_relic_layer.environment_variables
+  }
+}
+
+resource "aws_lambda_function" "my_lambda_64" {
+  function_name = "my-function-64"
+  role          = aws_iam_role.iam_for_lambda.arn
+  runtime       = "python3.8"
+  architectures = ["arm64"]
+
+  filename         = "${path.module}/package.zip"
+  source_code_hash = filebase64sha256("${path.module}/package.zip")
+
+  # --> Setup for handler, layer, and environment variables
+  handler = module.new_relic_layer.lambda_handler
+  layers  = [module.new_relic_layer.layer_version_arns["python3.8_arm64"]]
   environment {
     variables = module.new_relic_layer.environment_variables
   }

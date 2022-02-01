@@ -50,6 +50,22 @@ resource "aws_iam_policy" "new_relic_secret" {
 }
 ```
 
+Or to use the arm64-compatible layer:
+
+```terraform
+resource "aws_lambda_function" "my_lambda" {
+  function_name = "my-function"
+  role          = aws_iam_role.iam_for_lambda.arn
+  runtime       = "python3.8"
+  filename      = "${path.module}/package.zip"
+
+  # Use module outputs for configuring Lambda resource
+  handler               = module.new_relic_layer.lambda_handler
+  layers                = [module.new_relic_layer.layer_version_arns["python3.8_arm64"]]
+  environment_variables = module.new_relic_layer.environment_variables
+}
+```
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -59,3 +75,11 @@ resource "aws_iam_policy" "new_relic_secret" {
 | <a name="input_license_key_secret_name"></a> [license_key_secret_name](#input_license_key_secret_name) | The Secrets Manager secret name for the New Relic license key.| `string` | `NEW_RELIC_LICENSE_KEY` | no |
 | <a name="input_new_relic_account_id"></a> [new_relic_account_id](#input_new_relic_account_id) | The New Relic account ID | `string` |  | yes |
 
+## Outputs
+| Name | Description |
+|------|-------------|
+| environment_variables | The environment variables input to the Lambda resource. Will contain the `environment_variables` merged with layer-required variables. |
+| lambda_handler        | The `handler` input to the Lambda resource. Should be `newrelic_lambda_wrapper.handler`. |
+| policy_json           | The IAM policy JSON to add to the Lambda IAM role. |
+| layer_version_arns    | A map of `<runtime>_<architecture>` to the **latest version** of the layer ARN for that runtime/architecture. |
+| layer_arns            | A map of `<runtime>_<architecture>` to the layer ARN for that runtime/architecture. Can be used for cases where always using the latest version is not desired. |
