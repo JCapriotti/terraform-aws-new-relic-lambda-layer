@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.0.1](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v1.0.0) (2022-02-01)
+## [1.1.0](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v1.1.0) (2022-09-27)
+
+### Updates
+
+* Updated to Terraform `http` provider version 3.1.0, 
+  and is using the `response_body` output instead of the deprecated `body` output. 
+
+## [1.0.1](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v1.0.1) (2022-02-01)
 
 ### Features
 

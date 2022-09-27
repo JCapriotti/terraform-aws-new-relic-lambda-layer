@@ -1,5 +1,5 @@
 locals {
-  layers = jsondecode(data.http.layers.body).Layers
+  layers = jsondecode(data.http.layers.response_body).Layers
 
   //noinspection HILUnresolvedReference
   versions_with_runtimes = transpose({
