@@ -38,7 +38,7 @@ resource "aws_lambda_function" "my_lambda" {
   filename      = "${path.module}/package.zip"
 
   # Use module outputs for configuring Lambda resource
-  handler               = module.new_relic_layer.lambda_handler
+  handler               = module.new_relic_layer.lambda_handler # for node js use module.new_relic_layer.lambda_handler_nodejs
   layers                = [module.new_relic_layer.layer_version_arns["python3.8"]]
   environment_variables = module.new_relic_layer.environment_variables
 }
@@ -60,7 +60,7 @@ resource "aws_lambda_function" "my_lambda" {
   filename      = "${path.module}/package.zip"
 
   # Use module outputs for configuring Lambda resource
-  handler               = module.new_relic_layer.lambda_handler
+  handler               = module.new_relic_layer.lambda_handler # for node js use module.new_relic_layer.lambda_handler_nodejs
   layers                = [module.new_relic_layer.layer_version_arns["python3.8_arm64"]]
   environment_variables = module.new_relic_layer.environment_variables
 }
@@ -80,6 +80,7 @@ resource "aws_lambda_function" "my_lambda" {
 |------|-------------|
 | environment_variables | The environment variables input to the Lambda resource. Will contain the `environment_variables` merged with layer-required variables. |
 | lambda_handler        | The `handler` input to the Lambda resource. Should be `newrelic_lambda_wrapper.handler`. |
+| lambda_handler_nodejs | The `handler` input to the Lambda resource. Should be `newrelic-lambda-wrapper.handler` for nodejs. |
 | policy_json           | The IAM policy JSON to add to the Lambda IAM role. |
 | layer_version_arns    | A map of `<runtime>_<architecture>` to the **latest version** of the layer ARN for that runtime/architecture. |
 | layer_arns            | A map of `<runtime>_<architecture>` to the layer ARN for that runtime/architecture. Can be used for cases where always using the latest version is not desired. |
