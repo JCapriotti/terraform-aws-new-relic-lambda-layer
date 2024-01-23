@@ -46,6 +46,10 @@ output "lambda_handler" {
   value = "newrelic_lambda_wrapper.handler"
 }
 
+output "lambda_handler_nodejs" {
+  value = "newrelic-lambda-wrapper.handler"
+}
+
 output "policy_json" {
   value = data.aws_iam_policy_document.secret.json
 }
