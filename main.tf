@@ -14,8 +14,9 @@ data "aws_iam_policy_document" "secret" {
 }
 
 data "http" "layers" {
-  url = "https://${data.aws_region.current.id}.layers.newrelic-external.com/get-layers"
+  url = "https://${data.aws_region.current.region}.layers.newrelic-external.com/get-layers"
   request_headers = {
     Accept = "application/json"
   }
 }
+
