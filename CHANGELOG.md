@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.0](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v2.0.0) (2022-10-24)
+## [2.0.0](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v2.0.0) (2025-10-24)
 
 ### Breaking Change
 
