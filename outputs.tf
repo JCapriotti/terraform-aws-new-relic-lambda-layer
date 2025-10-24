@@ -61,4 +61,3 @@ output "layer_version_arns" {
 output "layer_arns" {
   value = local.layer_arns
 }
-

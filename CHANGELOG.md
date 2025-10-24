@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v2.0.0) (2022-10-24)
+
+### Breaking Change
+
+* Terraform `aws` provider minimum version is 6.0.0
+  * In the `aws_region` data source, now using `region` instead of the deprecated `name` output; suggested via #3.
+* Terraform minimum version is 1.0.0
+
+### Updates
+
+* Added output named `lambda_handler_nodejs` via #2.
+
 ## [1.1.0](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v1.1.0) (2022-09-27)
 
 ### Updates
