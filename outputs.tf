@@ -33,13 +33,18 @@ locals {
     }, {
     for k, v in local.layers_with_runtimes : replace(k, "_x86_64", "") => v[0] if replace(k, "_x86_64", "") != k
   })
+
+  env_license_key_secret = var.license_key == null ? { NEW_RELIC_LICENSE_KEY_SECRET = var.license_key_secret_name } : null
+  env_license_key        = var.license_key != null ? { NEW_RELIC_LICENSE_KEY = var.license_key } : null
 }
 
 output "environment_variables" {
-  value = merge(var.environment_variables, {
-    NEW_RELIC_ACCOUNT_ID         = var.new_relic_account_id,
-    NEW_RELIC_LAMBDA_HANDLER     = var.lambda_handler,
-    NEW_RELIC_LICENSE_KEY_SECRET = var.license_key_secret_name,
+  value = merge(var.environment_variables,
+    local.env_license_key,
+    local.env_license_key_secret,
+    {
+      NEW_RELIC_ACCOUNT_ID     = var.new_relic_account_id,
+      NEW_RELIC_LAMBDA_HANDLER = var.lambda_handler,
   })
 }
 
@@ -52,7 +57,7 @@ output "lambda_handler_nodejs" {
 }
 
 output "policy_json" {
-  value = data.aws_iam_policy_document.secret.json
+  value = nonsensitive(var.license_key == null ? data.aws_iam_policy_document.secret.json : "")
 }
 
 output "layer_version_arns" {

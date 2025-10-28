@@ -19,3 +19,10 @@ variable "license_key_secret_name" {
   description = "The name of the Secrets Manager secret that contains the New Relic license key"
   default     = "NEW_RELIC_LICENSE_KEY"
 }
+
+variable "license_key" {
+  type        = string
+  description = "The license key string"
+  default     = null
+  sensitive   = true
+}
