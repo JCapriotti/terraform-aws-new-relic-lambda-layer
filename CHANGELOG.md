@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v2.1.0) (2025-10-28)
+
+* Added support for specifying the license key directly as an input.
+
 ## [2.0.1](https://github.com/JCapriotti/terraform-aws-new-relic-lambda-layer/tree/v2.0.1) (2025-10-27)
 
 * I hadn't properly supported using license keys stored in non-standard secret locations 
