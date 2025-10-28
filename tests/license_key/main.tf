@@ -20,9 +20,10 @@ provider "aws" {
 module "new_relic_layer" {
   source = "../../"
 
-  lambda_handler       = "my_module.handler"
-  new_relic_account_id = "your_nr_account_id"
-  license_key          = "my key"
+  lambda_handler          = "my_module.handler"
+  new_relic_account_id    = "your_nr_account_id"
+  license_key             = "my key"
+  license_key_secret_name = "fff"
 
   environment_variables = {
     MY_ENV_VAR  = "foo",
