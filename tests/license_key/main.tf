@@ -17,13 +17,13 @@ provider "aws" {
   region  = "us-east-1"
 }
 
-# Test optional `license_key_secret_name` parameter
 module "new_relic_layer" {
   source = "../../"
 
-  lambda_handler       = "my_module.handler"
-  new_relic_account_id = "your_nr_account_id"
-  license_key_secret_name = "another-secret-name"
+  lambda_handler          = "my_module.handler"
+  new_relic_account_id    = "your_nr_account_id"
+  license_key             = "my key"
+  license_key_secret_name = "fff"
 
   environment_variables = {
     MY_ENV_VAR  = "foo",
@@ -48,9 +48,10 @@ output "lambda_handler_nodejs" {
 }
 
 output "environment_variables" {
-  value = module.new_relic_layer.environment_variables
+  value     = module.new_relic_layer.environment_variables
+  sensitive = true
 }
 
 output "policy_json" {
-  value = module.new_relic_layer.policy_json
+  value     = module.new_relic_layer.policy_json
 }

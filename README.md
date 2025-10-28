@@ -9,14 +9,14 @@ for more information.
 * Does not create resources, but rather encapsulates the boilerplate configuration and provides it as outputs.
 * Defaults to using the latest version of a particular layer.
 
-## Usage
-
 ### Prerequisites
 
 * A New Relic account
 * Monitoring for AWS Lambda [configured](https://docs.newrelic.com/docs/serverless-function-monitoring/aws-lambda-monitoring/enable-lambda-monitoring/)
 
-### Example
+## Examples
+
+### Basic Usage
 
 ```terraform
 module "new_relic_layer" {
@@ -38,7 +38,7 @@ resource "aws_lambda_function" "my_lambda" {
   filename      = "${path.module}/package.zip"
 
   # Use module outputs for configuring Lambda resource
-  handler               = module.new_relic_layer.lambda_handler # for node js use module.new_relic_layer.lambda_handler_nodejs
+  handler               = module.new_relic_layer.lambda_handler  # for node js use module.new_relic_layer.lambda_handler_nodejs
   layers                = [module.new_relic_layer.layer_version_arns["python3.8"]]
   environment_variables = module.new_relic_layer.environment_variables
 }
@@ -50,7 +50,9 @@ resource "aws_iam_policy" "new_relic_secret" {
 }
 ```
 
-Or to use the arm64-compatible layer:
+### Using an arm64 layer:
+
+(use the same `module` block and `aws_iam_policy` resource as above)
 
 ```terraform
 resource "aws_lambda_function" "my_lambda" {
@@ -66,12 +68,32 @@ resource "aws_lambda_function" "my_lambda" {
 }
 ```
 
+### Specifying License Key Directly
+
+Passing around the key isn't ideal, but supported. In this case, you would not need the `aws_iam_policy` resource shown above.
+
+```terraform
+module "new_relic_layer" {
+  source = "../../"
+
+  lambda_handler       = "my_module.handler"
+  new_relic_account_id = "your_nr_account_id"
+  license_key          = "my key secret"
+
+  environment_variables = {
+    MY_ENV_VAR  = "foo",
+    ANOTHER_VAR = "bar",
+  }
+}
+```
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_environment_variables"></a> [environment_variables](#input_environment_variables) | Map environment variables and values | `map(any)` | `{}` | no |
 | <a name="input_lambda_handler"></a> [lambda_handler](#input_lambda_handler) | The Lambda handler method | `string` |  | yes |
+| <a name="input_license_key"></a> [license_key](#input_license_key) | The actual New Relic license key. Using Secrets Manager is best, but provided as an option for edge cases. If specified then the secret name input will be ignored. | `string` | `null` | no |
 | <a name="input_license_key_secret_name"></a> [license_key_secret_name](#input_license_key_secret_name) | The Secrets Manager secret name for the New Relic license key.| `string` | `NEW_RELIC_LICENSE_KEY` | no |
 | <a name="input_new_relic_account_id"></a> [new_relic_account_id](#input_new_relic_account_id) | The New Relic account ID | `string` |  | yes |
 
@@ -81,6 +103,6 @@ resource "aws_lambda_function" "my_lambda" {
 | environment_variables | The environment variables input to the Lambda resource. Will contain the `environment_variables` merged with layer-required variables. |
 | lambda_handler        | The `handler` input to the Lambda resource. Should be `newrelic_lambda_wrapper.handler`. |
 | lambda_handler_nodejs | The `handler` input to the Lambda resource. Should be `newrelic-lambda-wrapper.handler` for nodejs. |
-| policy_json           | The IAM policy JSON to add to the Lambda IAM role. |
+| policy_json           | The IAM policy JSON to add to the Lambda IAM role, used to grant `secretsmanager:GetSecretValue` access to the secret containing the New Relic key. This JSON will be empty if a value is specified for the `license_key`. |
 | layer_version_arns    | A map of `<runtime>_<architecture>` to the **latest version** of the layer ARN for that runtime/architecture. |
 | layer_arns            | A map of `<runtime>_<architecture>` to the layer ARN for that runtime/architecture. Can be used for cases where always using the latest version is not desired. |
