@@ -48,10 +48,10 @@ output "lambda_handler_nodejs" {
 }
 
 output "environment_variables" {
-  sensitive = true
   value     = module.new_relic_layer.environment_variables
+  sensitive = true
 }
 
 output "policy_json" {
-  value = module.new_relic_layer.policy_json
+  value     = module.new_relic_layer.policy_json
 }

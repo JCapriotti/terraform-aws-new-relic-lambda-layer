@@ -1,5 +1,5 @@
 locals {
-  use_key_value = var.license_key != null
+  use_key_value = nonsensitive(var.license_key != null)
   use_secret    = !local.use_key_value
 }
 

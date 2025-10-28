@@ -23,7 +23,7 @@ module "new_relic_layer" {
 
   lambda_handler       = "my_module.handler"
   new_relic_account_id = "your_nr_account_id"
-  license_key_secret_name = "some_other_key"
+  license_key_secret_name = "another-secret-name"
 
   environment_variables = {
     MY_ENV_VAR  = "foo",
